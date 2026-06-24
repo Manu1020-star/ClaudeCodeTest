@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InvoiceKit — Create Invoice</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { font-family: 'Inter', system-ui, sans-serif; }
+
+    .field {
+      width: 100%;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 7px 11px;
+      font-size: 13px;
+      color: #111827;
+      outline: none;
+      background: white;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+    select.field { cursor: pointer; }
+
+    @media print {
+      @page { size: A4 portrait; margin: 14mm; }
+      body { overflow: visible !important; height: auto !important; background: white !important; }
+      #topBar { display: none !important; }
+      #formPanel { display: none !important; }
+      #mainWrap { height: auto !important; display: block !important; }
+      #previewPanel { overflow: visible !important; background: white !important; padding: 0 !important; display: block !important; width: 100% !important; }
+      #invoiceDoc { width: 100% !important; min-height: auto !important; box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100" style="height:100vh; overflow:hidden;">
+
+  <!-- Top Bar -->
+  <div id="topBar" class="bg-white border-b border-gray-200 h-14 flex items-center justify-between px-5 flex-shrink-0">
+    <a href="index.html" class="flex items-center gap-2 font-bold text-gray-900 hover:text-indigo-600 transition-colors">
+      <div class="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
+        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      InvoiceKit
+    </a>
+    <div class="flex items-center gap-2">
+      <button onclick="clearAll()" class="text-sm text-gray-500 hover:text-gray-800 px-3 py-1.5 rounded-lg hover:bg-gray-100 font-medium transition-colors">Clear</button>
+      <button onclick="window.print()" class="flex items-center gap-1.5 bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+        Download PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div id="mainWrap" class="flex" style="height:calc(100vh - 56px);">
+
+    <!-- Form Panel -->
+    <div id="formPanel" class="bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0" style="width:390px;">
+      <div class="p-5 space-y-5">
+
+        <!-- Your Business -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Your Business</p>
+          <div class="space-y-2">
+            <input id="bizName" class="field" type="text" placeholder="Your name or business name" oninput="render()">
+            <textarea id="bizAddress" class="field resize-none" rows="2" placeholder="Address" oninput="render()"></textarea>
+            <div class="grid grid-cols-2 gap-2">
+              <input id="bizEmail" class="field" type="email" placeholder="Email" oninput="render()">
+              <input id="bizPhone" class="field" type="tel" placeholder="Phone" oninput="render()">
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-gray-100">
+
+        <!-- Bill To -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bill To</p>
+          <div class="space-y-2">
+            <input id="clientName" class="field" type="text" placeholder="Client or company name" oninput="render()">
+            <textarea id="clientAddress" class="field resize-none" rows="2" placeholder="Client address" oninput="render()"></textarea>
+            <input id="clientEmail" class="field" type="email" placeholder="Client email (optional)" oninput="render()">
+          </div>
+        </div>
+
+        <hr class="border-gray-100">
+
+        <!-- Invoice Details -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Invoice Details</p>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">Invoice #</label>
+              <input id="invoiceNum" class="field" type="text" value="INV-001" oninput="render()">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">Currency</label>
+              <select id="currency" class="field" onchange="render()">
+                <option value="$">USD ($)</option>
+                <option value="€">EUR (€)</option>
+                <option value="£">GBP (£)</option>
+                <option value="C$">CAD (C$)</option>
+                <option value="A$">AUD (A$)</option>
+                <option value="¥">JPY (¥)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">Issue Date</label>
+              <input id="issueDate" class="field" type="date" oninput="render()">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">Due Date</label>
+              <input id="dueDate" class="field" type="date" oninput="render()">
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-gray-100">
+
+        <!-- Line Items -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Line Items</p>
+          <div class="grid gap-1 mb-1.5" style="grid-template-columns:1fr 52px 76px 18px;">
+            <span class="text-xs text-gray-400 pl-1">Description</span>
+            <span class="text-xs text-gray-400 text-center">Qty</span>
+            <span class="text-xs text-gray-400 text-right">Rate</span>
+            <span></span>
+          </div>
+          <div id="linesWrap" class="space-y-1.5"></div>
+          <button onclick="addLine()" class="mt-3 flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add item
+          </button>
+        </div>
+
+        <hr class="border-gray-100">
+
+        <!-- Tax & Discount -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Adjustments</p>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">Tax (%)</label>
+              <input id="taxRate" class="field" type="number" value="0" min="0" max="100" step="0.5" oninput="render()">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">Discount (%)</label>
+              <input id="discRate" class="field" type="number" value="0" min="0" max="100" step="0.5" oninput="render()">
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-gray-100">
+
+        <!-- Notes -->
+        <div class="pb-4">
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Notes</p>
+          <textarea id="notes" class="field resize-none" rows="3"
+            placeholder="Payment instructions, bank details, thank-you note..."
+            oninput="render()">Payment due within 30 days. Thank you for your business!</textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Preview Panel -->
+    <div id="previewPanel" class="flex-1 overflow-y-auto bg-gray-100 flex justify-center items-start p-8">
+      <div id="invoiceDoc" class="bg-white shadow-xl rounded-xl" style="width:680px; min-height:960px; padding:52px;">
+        <!-- rendered by render() -->
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let lines = [{ desc: 'Web Design', qty: 1, rate: 500 }];
+
+    // Set dates
+    const today = new Date();
+    const due30 = new Date(); due30.setDate(today.getDate() + 30);
+    document.getElementById('issueDate').value = isoDate(today);
+    document.getElementById('dueDate').value = isoDate(due30);
+
+    function isoDate(d) { return d.toISOString().split('T')[0]; }
+
+    function fmtDate(s) {
+      if (!s) return '';
+      const d = new Date(s + 'T12:00:00');
+      return d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    }
+
+    function money(n, sym) {
+      return sym + Math.abs(parseFloat(n)||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    }
+
+    function esc(s) {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/\n/g,'<br>');
+    }
+
+    function escAttr(s) {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    // --- Line items ---
+    function addLine() {
+      lines.push({ desc:'', qty:1, rate:0 });
+      renderLines();
+      render();
+    }
+
+    function removeLine(i) {
+      if (lines.length > 1) { lines.splice(i,1); renderLines(); render(); }
+    }
+
+    function updateLine(i, field, val) {
+      lines[i][field] = field === 'desc' ? val : (parseFloat(val)||0);
+      render();
+    }
+
+    function renderLines() {
+      document.getElementById('linesWrap').innerHTML = lines.map((l,i) => `
+        <div class="grid gap-1.5 items-center" style="grid-template-columns:1fr 52px 76px 18px;">
+          <input type="text" value="${escAttr(l.desc)}" placeholder="Description"
+            class="field" style="font-size:12px;padding:5px 9px;"
+            oninput="updateLine(${i},'desc',this.value)">
+          <input type="number" value="${l.qty}" min="0" step="any"
+            class="field text-center" style="font-size:12px;padding:5px 4px;"
+            oninput="updateLine(${i},'qty',this.value)">
+          <input type="number" value="${l.rate}" min="0" step="any" placeholder="0.00"
+            class="field text-right" style="font-size:12px;padding:5px 7px;"
+            oninput="updateLine(${i},'rate',this.value)">
+          <button onclick="removeLine(${i})" class="text-gray-300 hover:text-red-400 flex items-center justify-center transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // --- Main render ---
+    function render() {
+      const sym      = document.getElementById('currency').value;
+      const taxRate  = parseFloat(document.getElementById('taxRate').value) || 0;
+      const discRate = parseFloat(document.getElementById('discRate').value) || 0;
+
+      const subtotal = lines.reduce((s,l) => s + l.qty * l.rate, 0);
+      const disc     = subtotal * discRate / 100;
+      const tax      = (subtotal - disc) * taxRate / 100;
+      const total    = subtotal - disc + tax;
+
+      const bName  = document.getElementById('bizName').value;
+      const bAddr  = document.getElementById('bizAddress').value;
+      const bEmail = document.getElementById('bizEmail').value;
+      const bPhone = document.getElementById('bizPhone').value;
+      const cName  = document.getElementById('clientName').value;
+      const cAddr  = document.getElementById('clientAddress').value;
+      const cEmail = document.getElementById('clientEmail').value;
+      const invNum = document.getElementById('invoiceNum').value || 'INV-001';
+      const iDate  = document.getElementById('issueDate').value;
+      const dDate  = document.getElementById('dueDate').value;
+      const notes  = document.getElementById('notes').value;
+
+      document.getElementById('invoiceDoc').innerHTML = `
+        <div style="font-family:'Inter',system-ui,sans-serif;color:#111827;">
+
+          <!-- Header -->
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;">
+            <div>
+              <div style="font-size:22px;font-weight:800;color:#111827;line-height:1.2;">
+                ${esc(bName) || '<span style="color:#D1D5DB;">Your Business Name</span>'}
+              </div>
+              ${bAddr  ? `<div style="color:#6B7280;font-size:13px;margin-top:6px;line-height:1.7;">${esc(bAddr)}</div>` : ''}
+              ${bEmail ? `<div style="color:#6B7280;font-size:13px;">${esc(bEmail)}</div>` : ''}
+              ${bPhone ? `<div style="color:#6B7280;font-size:13px;">${esc(bPhone)}</div>` : ''}
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:30px;font-weight:900;color:#6366F1;letter-spacing:-0.5px;">INVOICE</div>
+              <div style="color:#9CA3AF;font-size:13px;margin-top:3px;">${esc(invNum)}</div>
+            </div>
+          </div>
+
+          <!-- Color bar -->
+          <div style="height:3px;background:linear-gradient(90deg,#6366F1,#8B5CF6);border-radius:2px;margin-bottom:28px;"></div>
+
+          <!-- Bill To + Dates -->
+          <div style="display:flex;justify-content:space-between;margin-bottom:36px;">
+            <div>
+              <div style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Bill To</div>
+              <div style="font-weight:700;font-size:15px;">${esc(cName) || '<span style="color:#D1D5DB;">Client Name</span>'}</div>
+              ${cAddr  ? `<div style="color:#6B7280;font-size:13px;margin-top:4px;line-height:1.7;">${esc(cAddr)}</div>` : ''}
+              ${cEmail ? `<div style="color:#6B7280;font-size:13px;">${esc(cEmail)}</div>` : ''}
+            </div>
+            <div style="text-align:right;">
+              <div style="margin-bottom:12px;">
+                <div style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Issue Date</div>
+                <div style="font-size:13px;color:#374151;">${fmtDate(iDate)}</div>
+              </div>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Due Date</div>
+                <div style="font-size:14px;font-weight:700;color:#111827;">${fmtDate(dDate)}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+            <thead>
+              <tr style="background:#F9FAFB;">
+                <th style="text-align:left;font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.07em;padding:10px 14px;border-radius:8px 0 0 8px;">Description</th>
+                <th style="text-align:center;font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.07em;padding:10px 6px;width:56px;">Qty</th>
+                <th style="text-align:right;font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.07em;padding:10px 6px;width:100px;">Rate</th>
+                <th style="text-align:right;font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.07em;padding:10px 14px;width:100px;border-radius:0 8px 8px 0;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${lines.map(l => `
+                <tr style="border-bottom:1px solid #F3F4F6;">
+                  <td style="padding:11px 14px;font-size:14px;color:#374151;">${esc(l.desc) || '<span style="color:#D1D5DB;">—</span>'}</td>
+                  <td style="padding:11px 6px;font-size:14px;color:#6B7280;text-align:center;">${l.qty}</td>
+                  <td style="padding:11px 6px;font-size:14px;color:#6B7280;text-align:right;">${money(l.rate,sym)}</td>
+                  <td style="padding:11px 14px;font-size:14px;font-weight:600;color:#111827;text-align:right;">${money(l.qty*l.rate,sym)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <!-- Totals -->
+          <div style="display:flex;justify-content:flex-end;margin-bottom:28px;">
+            <div style="width:230px;">
+              <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:#6B7280;">
+                <span>Subtotal</span><span>${money(subtotal,sym)}</span>
+              </div>
+              ${discRate > 0 ? `<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:#6B7280;"><span>Discount (${discRate}%)</span><span style="color:#EF4444;">−${money(disc,sym)}</span></div>` : ''}
+              ${taxRate  > 0 ? `<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:#6B7280;"><span>Tax (${taxRate}%)</span><span>${money(tax,sym)}</span></div>` : ''}
+              <div style="border-top:2px solid #111827;margin-top:8px;padding-top:11px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-weight:800;font-size:15px;">Total</span>
+                <span style="font-weight:900;font-size:22px;color:#6366F1;">${money(total,sym)}</span>
+              </div>
+            </div>
+          </div>
+
+          ${notes ? `
+          <div style="border-top:1px solid #F3F4F6;padding-top:22px;">
+            <div style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;">Notes</div>
+            <div style="font-size:13px;color:#6B7280;line-height:1.7;">${esc(notes)}</div>
+          </div>` : ''}
+
+        </div>
+      `;
+
+      persist();
+    }
+
+    // --- Persistence ---
+    function persist() {
+      try {
+        localStorage.setItem('ik', JSON.stringify({
+          biz:    { name:document.getElementById('bizName').value, addr:document.getElementById('bizAddress').value, email:document.getElementById('bizEmail').value, phone:document.getElementById('bizPhone').value },
+          client: { name:document.getElementById('clientName').value, addr:document.getElementById('clientAddress').value, email:document.getElementById('clientEmail').value },
+          meta:   { num:document.getElementById('invoiceNum').value, cur:document.getElementById('currency').value, issue:document.getElementById('issueDate').value, due:document.getElementById('dueDate').value, tax:document.getElementById('taxRate').value, disc:document.getElementById('discRate').value },
+          notes:  document.getElementById('notes').value,
+          lines
+        }));
+      } catch(e) {}
+    }
+
+    function hydrate() {
+      try {
+        const s = JSON.parse(localStorage.getItem('ik'));
+        if (!s) return;
+        if (s.biz)    { document.getElementById('bizName').value=s.biz.name||''; document.getElementById('bizAddress').value=s.biz.addr||''; document.getElementById('bizEmail').value=s.biz.email||''; document.getElementById('bizPhone').value=s.biz.phone||''; }
+        if (s.client) { document.getElementById('clientName').value=s.client.name||''; document.getElementById('clientAddress').value=s.client.addr||''; document.getElementById('clientEmail').value=s.client.email||''; }
+        if (s.meta)   { document.getElementById('invoiceNum').value=s.meta.num||'INV-001'; document.getElementById('currency').value=s.meta.cur||'$'; if(s.meta.issue) document.getElementById('issueDate').value=s.meta.issue; if(s.meta.due) document.getElementById('dueDate').value=s.meta.due; document.getElementById('taxRate').value=s.meta.tax||'0'; document.getElementById('discRate').value=s.meta.disc||'0'; }
+        if (s.notes !== undefined) document.getElementById('notes').value=s.notes;
+        if (s.lines && s.lines.length) lines=s.lines;
+      } catch(e) {}
+    }
+
+    function clearAll() {
+      if (!confirm('Clear all invoice data?')) return;
+      localStorage.removeItem('ik');
+      lines = [{ desc:'', qty:1, rate:0 }];
+      ['bizName','bizAddress','bizEmail','bizPhone','clientName','clientAddress','clientEmail'].forEach(id => document.getElementById(id).value='');
+      document.getElementById('invoiceNum').value='INV-001';
+      document.getElementById('currency').value='$';
+      document.getElementById('issueDate').value=isoDate(new Date());
+      const d=new Date(); d.setDate(d.getDate()+30); document.getElementById('dueDate').value=isoDate(d);
+      document.getElementById('taxRate').value='0';
+      document.getElementById('discRate').value='0';
+      document.getElementById('notes').value='Payment due within 30 days. Thank you for your business!';
+      renderLines(); render();
+    }
+
+    // Boot
+    hydrate();
+    renderLines();
+    render();
+  </script>
+
+</body>
+</html>
