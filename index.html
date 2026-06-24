@@ -3,147 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="InvoiceKit — Create professional invoices in minutes. Free invoice generator for freelancers and small businesses.">
   <title>InvoiceKit — Professional Invoices for Freelancers</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     * { font-family: 'Inter', system-ui, sans-serif; }
+
+    /* Skip navigation link — visible only on focus */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 8px;
+      z-index: 9999;
+      background: #4F46E5;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 16px;
+      border-radius: 0 0 8px 8px;
+      text-decoration: none;
+      transition: top 0.1s;
+    }
+    .skip-link:focus { top: 0; outline: 3px solid #FCD34D; outline-offset: 2px; }
+
+    /* Consistent, visible focus indicator for all interactive elements */
+    :focus-visible {
+      outline: 3px solid #4F46E5;
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body class="bg-white text-gray-900">
 
-  <!-- Navbar -->
-  <nav class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
-    <div class="flex items-center gap-2 font-bold text-xl">
-      <div class="w-7 h-7 bg-indigo-600 rounded-md flex items-center justify-center">
-        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ── Header / Nav ──────────────────────────────────── -->
+  <header>
+    <nav aria-label="Main navigation" class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 font-bold text-xl" aria-label="InvoiceKit — home">
+        <div class="w-7 h-7 bg-indigo-600 rounded-md flex items-center justify-center" aria-hidden="true">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <span>InvoiceKit</span>
+      </a>
+      <ul class="flex items-center gap-6 list-none m-0 p-0" role="list">
+        <li><a href="#pricing" class="text-sm text-gray-700 hover:text-gray-900 font-medium">Pricing</a></li>
+        <li>
+          <a href="invoice.html" class="text-sm bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+            Try Free <span aria-hidden="true">→</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ── Main content ──────────────────────────────────── -->
+  <main id="main-content" tabindex="-1">
+
+    <!-- Hero -->
+    <section aria-labelledby="hero-heading" class="max-w-4xl mx-auto px-6 pt-16 pb-20 text-center">
+      <div class="inline-block bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-8 tracking-wide uppercase">
+        Free to start · No signup needed
+      </div>
+      <h1 id="hero-heading" class="text-6xl font-black text-gray-900 leading-tight mb-6 tracking-tight">
+        Invoices your clients<br>will actually pay
+      </h1>
+      <p class="text-xl text-gray-700 max-w-xl mx-auto mb-10 leading-relaxed">
+        Stop fumbling with Word docs. Create a polished, professional invoice in 2 minutes and download it as a PDF.
+      </p>
+      <a href="invoice.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-lg font-bold px-8 py-4 rounded-2xl hover:bg-indigo-700 transition-colors shadow-xl shadow-indigo-200">
+        Create your first invoice
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+        </svg>
+      </a>
+      <p class="text-sm text-gray-600 mt-4">Takes 2 minutes. No account required.</p>
+    </section>
+
+    <!-- Features -->
+    <section aria-labelledby="features-heading" class="bg-gray-50 py-16">
+      <div class="max-w-5xl mx-auto px-6">
+        <h2 id="features-heading" class="sr-only">Features</h2>
+        <ul class="grid grid-cols-1 md:grid-cols-3 gap-8 list-none m-0 p-0" role="list">
+          <li class="text-center">
+            <div class="w-14 h-14 bg-indigo-100 rounded-2xl mx-auto mb-4 flex items-center justify-center" aria-hidden="true">
+              <svg class="w-7 h-7 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+            <h3 class="font-bold text-lg mb-2">Ready in 2 minutes</h3>
+            <p class="text-gray-700 text-sm leading-relaxed">Fill in your details and line items. Preview updates live. Hit download when ready.</p>
+          </li>
+          <li class="text-center">
+            <div class="w-14 h-14 bg-emerald-100 rounded-2xl mx-auto mb-4 flex items-center justify-center" aria-hidden="true">
+              <svg class="w-7 h-7 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+            </div>
+            <h3 class="font-bold text-lg mb-2">Download as PDF</h3>
+            <p class="text-gray-700 text-sm leading-relaxed">One click to download a clean PDF. Email it to your client or print it.</p>
+          </li>
+          <li class="text-center">
+            <div class="w-14 h-14 bg-purple-100 rounded-2xl mx-auto mb-4 flex items-center justify-center" aria-hidden="true">
+              <svg class="w-7 h-7 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h3 class="font-bold text-lg mb-2">Auto-calculates</h3>
+            <p class="text-gray-700 text-sm leading-relaxed">Quantities, rates, tax, discount — totals calculated automatically.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" aria-labelledby="pricing-heading" class="max-w-4xl mx-auto px-6 py-20">
+      <div class="text-center mb-12">
+        <h2 id="pricing-heading" class="text-4xl font-black mb-4">Simple, honest pricing</h2>
+        <p class="text-gray-700">Start free. Upgrade when you need more.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+
+        <!-- Free tier -->
+        <article aria-labelledby="starter-name" class="border border-gray-200 rounded-2xl p-8">
+          <p id="starter-name" class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Starter</p>
+          <p class="text-5xl font-black mb-6">Free</p>
+          <ul class="space-y-3 mb-8 text-sm list-none p-0 m-0" role="list">
+            <li class="flex items-center gap-3">
+              <span class="text-emerald-700 font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span><span class="text-gray-700">Unlimited invoices</span></span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-emerald-700 font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span><span class="text-gray-700">Download as PDF</span></span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-emerald-700 font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span><span class="text-gray-700">Tax &amp; discount support</span></span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-emerald-700 font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span><span class="text-gray-700">Auto-save to browser</span></span>
+            </li>
+            <!-- "—" is a different symbol from "✓" so sighted users get shape + color distinction, not color alone (WCAG 1.4.1) -->
+            <li class="flex items-center gap-3">
+              <span class="text-gray-400 font-bold text-base leading-none" aria-hidden="true">—</span>
+              <span><span class="sr-only">Not included: </span><span class="text-gray-600">Custom logo branding</span></span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-gray-400 font-bold text-base leading-none" aria-hidden="true">—</span>
+              <span><span class="sr-only">Not included: </span><span class="text-gray-600">Invoice history</span></span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-gray-400 font-bold text-base leading-none" aria-hidden="true">—</span>
+              <span><span class="sr-only">Not included: </span><span class="text-gray-600">Multiple templates</span></span>
+            </li>
+          </ul>
+          <a href="invoice.html" class="block text-center border-2 border-gray-300 text-gray-700 font-semibold py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-700 transition-colors">
+            Start for Free
+          </a>
+        </article>
+
+        <!-- Pro tier -->
+        <article aria-labelledby="pro-name" class="bg-indigo-600 rounded-2xl p-8 text-white relative">
+          <div class="absolute top-5 right-5 bg-yellow-400 text-yellow-900 text-xs font-bold px-2.5 py-1 rounded-full">POPULAR</div>
+          <p id="pro-name" class="text-sm font-semibold text-indigo-100 uppercase tracking-wide mb-1">Pro</p>
+          <p class="flex items-baseline gap-1 mb-1">
+            <span class="text-5xl font-black">$9</span>
+            <span class="text-indigo-100 text-lg" aria-hidden="true">/mo</span>
+            <span class="sr-only">per month</span>
+          </p>
+          <p class="text-indigo-100 text-xs mb-6">or $79/year — save 27%</p>
+          <ul class="space-y-3 mb-8 text-sm list-none p-0 m-0" role="list">
+            <li class="flex items-center gap-3">
+              <span class="text-white font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span>Everything in Free</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-white font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span>Upload your logo</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-white font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span>3 invoice templates</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-white font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span>Save invoice history</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-white font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span>Client database</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-white font-bold text-base leading-none" aria-hidden="true">✓</span>
+              <span><span class="sr-only">Included: </span>Priority support</span>
+            </li>
+          </ul>
+          <a href="https://buy.stripe.com/test_14A5kE6oQ9rH5HgfDx6kg00" class="block text-center bg-white text-indigo-700 font-bold py-3 rounded-xl hover:bg-indigo-50 transition-colors">
+            Upgrade to Pro <span aria-hidden="true">→</span>
+          </a>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────── -->
+  <footer role="contentinfo" class="border-t border-gray-100 py-10 text-center text-sm text-gray-600">
+    <div class="flex items-center justify-center gap-2 font-semibold text-gray-700 mb-2">
+      <div class="w-5 h-5 bg-indigo-600 rounded flex items-center justify-center" aria-hidden="true">
+        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
       </div>
-      InvoiceKit
+      <span>InvoiceKit</span>
     </div>
-    <div class="flex items-center gap-6">
-      <a href="#pricing" class="text-sm text-gray-500 hover:text-gray-900 font-medium">Pricing</a>
-      <a href="invoice.html" class="text-sm bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">Try Free →</a>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <section class="max-w-4xl mx-auto px-6 pt-16 pb-20 text-center">
-    <div class="inline-block bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-8 tracking-wide uppercase">
-      Free to start · No signup needed
-    </div>
-    <h1 class="text-6xl font-black text-gray-900 leading-tight mb-6 tracking-tight">
-      Invoices your clients<br>will actually pay
-    </h1>
-    <p class="text-xl text-gray-500 max-w-xl mx-auto mb-10 leading-relaxed">
-      Stop fumbling with Word docs. Create a polished, professional invoice in 2 minutes and download it as a PDF.
-    </p>
-    <a href="invoice.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-lg font-bold px-8 py-4 rounded-2xl hover:bg-indigo-700 transition-colors shadow-xl shadow-indigo-200">
-      Create your first invoice
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-      </svg>
-    </a>
-    <p class="text-sm text-gray-400 mt-4">Takes 2 minutes. No account required.</p>
-  </section>
-
-  <!-- Features -->
-  <section class="bg-gray-50 py-16">
-    <div class="max-w-5xl mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="text-center">
-          <div class="w-14 h-14 bg-indigo-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-            <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-          </div>
-          <h3 class="font-bold text-lg mb-2">Ready in 2 minutes</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Fill in your details and line items. Preview updates live. Hit download when ready.</p>
-        </div>
-        <div class="text-center">
-          <div class="w-14 h-14 bg-emerald-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-            <svg class="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-          </div>
-          <h3 class="font-bold text-lg mb-2">Download as PDF</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">One click to download a clean PDF. Email it to your client or print it.</p>
-        </div>
-        <div class="text-center">
-          <div class="w-14 h-14 bg-purple-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-            <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-            </svg>
-          </div>
-          <h3 class="font-bold text-lg mb-2">Auto-calculates</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Quantities, rates, tax, discount — totals calculated automatically.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Pricing -->
-  <section id="pricing" class="max-w-4xl mx-auto px-6 py-20">
-    <div class="text-center mb-12">
-      <h2 class="text-4xl font-black mb-4">Simple, honest pricing</h2>
-      <p class="text-gray-500">Start free. Upgrade when you need more.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-      <!-- Free -->
-      <div class="border border-gray-200 rounded-2xl p-8">
-        <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">Starter</div>
-        <div class="text-5xl font-black mb-6">Free</div>
-        <ul class="space-y-3 mb-8 text-sm">
-          <li class="flex items-center gap-3"><span class="text-emerald-500 font-bold">✓</span><span class="text-gray-700">Unlimited invoices</span></li>
-          <li class="flex items-center gap-3"><span class="text-emerald-500 font-bold">✓</span><span class="text-gray-700">Download as PDF</span></li>
-          <li class="flex items-center gap-3"><span class="text-emerald-500 font-bold">✓</span><span class="text-gray-700">Tax &amp; discount support</span></li>
-          <li class="flex items-center gap-3"><span class="text-emerald-500 font-bold">✓</span><span class="text-gray-700">Auto-save to browser</span></li>
-          <li class="flex items-center gap-3"><span class="text-gray-300 font-bold">✓</span><span class="text-gray-400">Custom logo branding</span></li>
-          <li class="flex items-center gap-3"><span class="text-gray-300 font-bold">✓</span><span class="text-gray-400">Invoice history</span></li>
-          <li class="flex items-center gap-3"><span class="text-gray-300 font-bold">✓</span><span class="text-gray-400">Multiple templates</span></li>
-        </ul>
-        <a href="invoice.html" class="block text-center border-2 border-gray-200 text-gray-700 font-semibold py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-600 transition-colors">
-          Start for Free
-        </a>
-      </div>
-
-      <!-- Pro -->
-      <div class="bg-indigo-600 rounded-2xl p-8 text-white relative">
-        <div class="absolute top-5 right-5 bg-yellow-400 text-yellow-900 text-xs font-bold px-2.5 py-1 rounded-full">POPULAR</div>
-        <div class="text-sm font-semibold text-indigo-300 uppercase tracking-wide mb-1">Pro</div>
-        <div class="flex items-baseline gap-1 mb-1">
-          <span class="text-5xl font-black">$9</span>
-          <span class="text-indigo-300 text-lg">/mo</span>
-        </div>
-        <div class="text-indigo-300 text-xs mb-6">or $79/year — save 27%</div>
-        <ul class="space-y-3 mb-8 text-sm">
-          <li class="flex items-center gap-3"><span class="text-emerald-400 font-bold">✓</span><span>Everything in Free</span></li>
-          <li class="flex items-center gap-3"><span class="text-emerald-400 font-bold">✓</span><span>Upload your logo</span></li>
-          <li class="flex items-center gap-3"><span class="text-emerald-400 font-bold">✓</span><span>3 invoice templates</span></li>
-          <li class="flex items-center gap-3"><span class="text-emerald-400 font-bold">✓</span><span>Save invoice history</span></li>
-          <li class="flex items-center gap-3"><span class="text-emerald-400 font-bold">✓</span><span>Client database</span></li>
-          <li class="flex items-center gap-3"><span class="text-emerald-400 font-bold">✓</span><span>Priority support</span></li>
-        </ul>
-        <a href="https://buy.stripe.com/test_14A5kE6oQ9rH5HgfDx6kg00" class="block text-center bg-white text-indigo-600 font-bold py-3 rounded-xl hover:bg-indigo-50 transition-colors">
-          Upgrade to Pro →
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="border-t border-gray-100 py-10 text-center text-sm text-gray-400">
-    <div class="flex items-center justify-center gap-2 font-semibold text-gray-600 mb-2">
-      <div class="w-5 h-5 bg-indigo-600 rounded flex items-center justify-center">
-        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-        </svg>
-      </div>
-      InvoiceKit
-    </div>
-    <p>Built for freelancers and small businesses · © 2026</p>
+    <p>Built for freelancers and small businesses · <span aria-label="Copyright 2026">© 2026</span></p>
   </footer>
 
 </body>
