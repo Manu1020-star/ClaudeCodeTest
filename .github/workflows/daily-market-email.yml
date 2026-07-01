@@ -1,0 +1,26 @@
+name: Daily market watchlist email
+
+on:
+  schedule:
+    # 12:23 UTC daily (off the :00 mark to avoid the top-of-hour rush)
+    - cron: "23 12 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build and send digest
+        env:
+          LUNARCRUSH_API_KEY: ${{ secrets.LUNARCRUSH_API_KEY }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_APP_PASSWORD: ${{ secrets.MAIL_APP_PASSWORD }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+        run: python scripts/daily_market_email.py
