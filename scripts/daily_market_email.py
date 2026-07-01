@@ -44,11 +44,23 @@ DISCLAIMER = (
 )
 
 
+def env(name, default=None):
+    """Read an env var, tolerating stray whitespace/newlines from
+    copy-pasted GitHub secrets (a trailing newline in a header value
+    raises ValueError deep inside http.client)."""
+    value = os.environ.get(name)
+    if value is None:
+        if default is not None:
+            return default
+        raise KeyError(f"Missing required environment variable: {name}")
+    return value.strip()
+
+
 def api_get(path):
     req = urllib.request.Request(
         API_BASE + path,
         headers={
-            "Authorization": "Bearer " + os.environ["LUNARCRUSH_API_KEY"],
+            "Authorization": "Bearer " + env("LUNARCRUSH_API_KEY"),
             "User-Agent": "daily-market-email/1.0",
         },
     )
@@ -161,15 +173,15 @@ def main():
     if "--dry-run" in sys.argv:
         print(digest)
         return
-    sender = os.environ["MAIL_USERNAME"]
-    recipient = os.environ.get("TO_EMAIL") or sender
+    sender = env("MAIL_USERNAME")
+    recipient = env("TO_EMAIL", default="") or sender
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"Daily watchlist: top 10 stocks & crypto — {date.today():%b %d, %Y}"
     msg["From"] = sender
     msg["To"] = recipient
     msg.attach(MIMEText(digest, "html"))
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=30) as smtp:
-        smtp.login(sender, os.environ["MAIL_APP_PASSWORD"])
+        smtp.login(sender, env("MAIL_APP_PASSWORD"))
         smtp.sendmail(sender, [recipient], msg.as_string())
     print(f"Sent digest to {recipient}")
 
